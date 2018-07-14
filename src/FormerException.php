@@ -6,6 +6,6 @@ use Exception;
 
 /**
  */
-class FormerPatternException
+class FormerException extends Exception
 {
 }

@@ -24,4 +24,14 @@ class TestFormer extends Former
      * @FormerArrayVal {"params":[["水果","蔬菜","茶叶"]],"each":"FormerIn","message":"TAG必须是水果、蔬菜、茶叶的数组"}
      */
     protected $tag = [];
+    /**
+     * @FormerObjectType {"message":"former必须是对象"}
+     * @Former {"message":"former对象验证失败","former":"\\Lay\\Former\\Tests\\Demo\\TestObjectFormer"}
+     */
+    protected $former = null;
+    /**
+     * @FormerArrayType {"message":"formers必须是对象数组","each":"FormerObjectType"}
+     * @Formers {"message":"formers对象验证失败","former":"\\Lay\\Former\\Tests\\Demo\\TestObjectFormer"}
+     */
+    protected $formers = [];
 }

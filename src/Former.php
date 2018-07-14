@@ -80,23 +80,62 @@ abstract class Former
                         $rule = substr($param, 9);
                         $not = true;
                     }
-                    if(!empty($rule)) {
-                        // 设置验证参数、失败信息
-                        if(!is_array($option)) {
-                            $option = [
-                                'params' => [],
-                                'message' => LAY_FORMER_ERROR_MESSAGE 
-                            ];
-                        }
-                        if(empty($option['message'])) {
-                            // 设置验证失败默认提示信息
-                            $option['message'] = LAY_FORMER_ERROR_MESSAGE;
-                        }
-                        if(empty($option['params']) || !is_array($option['params'])) {
-                            $option['params'] = [];
+                    // 设置验证参数、失败信息
+                    if(!is_array($option)) {
+                        $option = [
+                            'params' => [],
+                            'message' => LAY_FORMER_ERROR_MESSAGE 
+                        ];
+                    }
+                    if(empty($option['message'])) {
+                        // 设置验证失败默认提示信息
+                        $option['message'] = LAY_FORMER_ERROR_MESSAGE;
+                    }
+                    if(empty($option['params']) || !is_array($option['params'])) {
+                        $option['params'] = [];
+                    } else {
+                        $option['params'] = array_values($option['params']);
+                    }
+                    if(empty($rule)) {
+                        // 子Former表单
+                        if(!empty($option['former']) && is_string($option['former']) && class_exists($option['former']) && is_subclass_of($option['former'], Former::class)) {
+                            $clazz = $option['former'];
                         } else {
-                            $option['params'] = array_values($option['params']);
+                            throw new FormerException('Invalid former option value on property '.get_class($this).'::'.$name.',"former" value must be class extends '.Former::class);
                         }
+                        $former = new $clazz();
+                        $valid = $former->input($value)->validate();
+                        if(!$valid) {
+                            $this->_errors[] = $option['message'];
+                            $this->_errors = array_merge($this->_errors, $former->_errors);
+                            if(LAY_FORMER_ERROR_FIRST_SUSPEND) {
+                                // 跳过更多验证
+                                break 2;
+                            }
+                        }
+
+                    } else if($rule == 's') {
+                        // 子Former表单
+                        if(!empty($option['former']) && is_string($option['former']) && class_exists($option['former']) && is_subclass_of($option['former'], Former::class)) {
+                            $clazz = $option['former'];
+                        } else {
+                            throw new FormerException('Invalid former option value on property '.get_class($this).'::'.$name.',"former" value must be class extends '.Former::class);
+                        }
+                        if(is_array($value)) {
+                            foreach ($value as $val) {
+                                $former = new $clazz();
+                                $valid = $former->input($val)->validate();
+                                if(!$valid) {
+                                    $this->_errors[] = $option['message'];
+                                    $this->_errors = array_merge($this->_errors, $former->_errors);
+                                    if(LAY_FORMER_ERROR_FIRST_SUSPEND) {
+                                        // 跳过更多验证
+                                        break 2;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
                         // 验证
                         $rule = substr($param, 6);
                         $json = json_decode(json_encode($option));
@@ -113,7 +152,7 @@ abstract class Former
                                 $eachValidator = call_user_func_array([Validator::class, $eachRule], $json->params);
                                 $eachValidator = Validator::not($eachValidator);
                             } else {
-                                throw new FormerPatternException('Invalid former pattern, must start with "Former" or "NotFormer"');
+                                throw new FormerException('Invalid former option value on property '.get_class($this).'::'.$name.', "each" value must start with "Former" or "NotFormer"');
                             }
                             $ret = $not ? Validator::not($validator->each($eachValidator))->validate($value) : $validator->each($eachValidator)->validate($value);
                         } else {
@@ -122,9 +161,9 @@ abstract class Former
                         }
                         // 验证不正确
                         if(empty($ret)) {
-                            $this->_errors[] = sprintf($json->message.'[%s]', $name);
+                            $this->_errors[] = sprintf('[%s]' . $json->message, $name);
                             if(LAY_FORMER_ERROR_FIRST_SUSPEND) {
-                                // 路过更多验证
+                                // 跳过更多验证
                                 break 2;
                             }
                         }
