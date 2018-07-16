@@ -16,9 +16,9 @@ class Tests extends TestCase
         $form->arr = ['3'];
         $form->tag = ['水果'];
         $obj = new stdClass;
-        $obj->id = 'a';
+        $obj->id = '4';
         $objs = new stdClass;
-        $objs->id = '0';
+        $objs->id = '5';
         $form->former = $obj;
         $form->formers = [$objs];
 
