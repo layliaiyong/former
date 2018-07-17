@@ -1,7 +1,7 @@
 {
     "name": "layliaiyong/former",
-    "description": "表单数据过滤、验证",
-    "keywords": ["form", "validate", "filter"],
+    "description": "Form validate with annotation",
+    "keywords": ["form", "validate", "annotation"],
     "type": "library",
     "support": {
         "issues": "https://github.com/layliaiyong/former/issues",
