@@ -11,32 +11,35 @@ class TestFormer extends Former
     /**
      * @FormerIntVal {"message":"ID必需为数值"}
      */
-    // protected $id = 0;
+    protected $id = 0;
     /**
-     * @FormerBetween {"params":[1,10],"message":"LEN必须介于1~10之间"}
+     * @NotFormerIntVal {"message":"NOT必需不是数值"}
      */
-    // protected $len = 0;
+    protected $not = 0;
+    /**
+     * @FormerBetween {"message":"LEN必须介于1~10之间","params":[1,10]}
+     */
+    protected $len = 0;
     /**
      * @FormerArrayType {"message":"ARR必须是数组"}
      */
-    // protected $arr = [];
+    protected $arr = [];
     /**
-     * @FormerArrayVal {"params":[["水果","蔬菜","茶叶"]],"each":"FormerIn","message":"TAG必须是水果、蔬菜、茶叶的数组"}
+     * @FormerArrayVal {"message":"TAG必须是水果、蔬菜、茶叶的数组","params":[["水果","蔬菜","茶叶"]],"each":"FormerIn"}
      */
-    // protected $tag = [];
+    protected $tag = [];
     /**
      * @FormerObjectType {"message":"former必须是对象"}
      * @Former {"message":"former对象验证失败","former":"\\Lay\\Former\\Tests\\Demo\\TestObjectFormer"}
      */
-    // protected $former = null;
+    protected $former = null;
     /**
      * @FormerArrayType {"message":"formers必须是对象数组","each":"FormerObjectType"}
-     * @Formers {"message":"formers对象验证失败","former":"\\Lay\\Former\\Tests\\Demo\\TestObjectFormer"}
+     * @Formers {"message":"formers对象数组验证失败","former":"\\Lay\\Former\\Tests\\Demo\\TestObjectFormer"}
      */
-    // protected $formers = [];
+    protected $formers = [];
     /**
-     * @CaseFormer {"when":"FormerEquals","params":[2],"former":"\\Lay\\Former\\Tests\\Demo\\TestCase2Former"}
-     * @CaseFormer {"when":"FormerEquals","params":[1],"former":"\\Lay\\Former\\Tests\\Demo\\TestCase1Former"}
+     * @CaseFormer [{"message":"case=1验证失败","when":"FormerEquals","params":[1],"former":"\\Lay\\Former\\Tests\\Demo\\TestCase1Former"},{"message":"case2验证失败","when":"FormerEquals","params":[2],"former":"\\Lay\\Former\\Tests\\Demo\\TestCase2Former"}]
      */
     protected $case = 1;
     protected $case1;
